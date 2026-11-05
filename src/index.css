@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Orange + Brown theme: purple/pink classes ab orange/amber dikhengi */
+@theme {
+  --color-purple-100: #ffedd5;
+  --color-purple-200: #fed7aa;
+  --color-purple-300: #fdba74;
+  --color-purple-400: #fb923c;
+  --color-purple-500: #f97316;
+  --color-purple-600: #ea580c;
+  --color-purple-700: #c2410c;
+  --color-purple-900: #7c2d12;
+  --color-pink-400: #fbbf24;
+  --color-pink-500: #f59e0b;
+  --color-pink-900: #78350f;
+}
+
+
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+:root {
+  --grad-from: #ea580c;
+  --grad-to: #f59e0b;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.09);
+}
+html:not(.dark) {
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(234, 88, 12, 0.14);
+}
+
+body {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reusable design classes (App.jsx / components mein pehle se use ho rahi hain) */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px);
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+article.glass:hover {
+  border-color: rgba(249, 115, 22, 0.4);
+  box-shadow: 0 12px 40px -18px rgba(249, 115, 22, 0.5);
+}
+.premium-gradient {
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
+  color: #fff;
+}
+.gradient-text {
+  background: linear-gradient(90deg, #fb923c, #f59e0b, #fb923c);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 6s linear infinite;
+}
+@keyframes shine { to { background-position: 200% center; } }
+
+/* Ek hi entrance: page load par feed upar slide hoti hai */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.center-column > * { animation: rise 0.5s ease both; }
+.center-column > *:nth-child(2) { animation-delay: 0.06s; }
+.center-column > *:nth-child(3) { animation-delay: 0.12s; }
+
+/* Buttons: press feedback */
+button:not(:disabled):active { transform: scale(0.96); }
+button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #fb923c; outline-offset: 2px;
+}
+
+/* Dropdown pop */
+@keyframes pop { from { opacity: 0; transform: scale(0.95) translateY(-6px); } to { opacity: 1; transform: none; } }
+.pop-in { animation: pop 0.16s ease both; transform-origin: top right; }
+
+/* Dark mode ke liye ambient glow */
+.dark body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(600px circle at 15% 0%, rgba(249, 115, 22, 0.16), transparent 60%),
+    radial-gradient(500px circle at 90% 20%, rgba(245, 158, 11, 0.10), transparent 60%);
+}
+
+/* Light theme: components mein hardcoded white/gray text ko readable banata hai */
+html:not(.dark) .text-white:not(.premium-gradient):not(.bg-white) { color: #2b1a0f; }
+html:not(.dark) .text-gray-300 { color: #5a4636; }
+html:not(.dark) .text-gray-400, html:not(.dark) .text-gray-500 { color: #8a7260; }
+html:not(.dark) .bg-white\/5 { background: rgba(234, 88, 12, 0.06); }
+html:not(.dark) .border-white\/10, html:not(.dark) .border-white\/5 { border-color: rgba(234, 88, 12, 0.14); }
+html:not(.dark) .hover\:bg-white\/10:hover { background: rgba(234, 88, 12, 0.1); }
+html:not(.dark) .nav-surface { background: rgba(255, 255, 255, 0.9); }
+html:not(.dark) .premium-gradient * { color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Dashboard Layout */
+.dashboard-layout {
+  width: 100%; max-width: 1600px; margin: 0 auto;
+  display: grid; grid-template-columns: 260px minmax(0, 1fr) 300px;
+  align-items: start; gap: 24px; padding: 24px;
+}
+.left-column, .center-column, .right-column { min-width: 0; width: 100%; }
+.left-column, .right-column { position: sticky; top: 96px; max-height: calc(100vh - 110px); overflow-y: auto; scrollbar-width: none; }
+.center-column { max-width: 760px; margin: 0 auto; }
+.left-column > aside, .right-column > aside { width: 100%; padding: 0; }
+
+@media (max-width: 1200px) {
+  .dashboard-layout { grid-template-columns: 230px minmax(0, 1fr); }
+  .right-column { display: none; }
+}
+@media (max-width: 1023px) {
+  .dashboard-layout { display: block; padding: 14px; }
+  .left-column { display: none; }
+  .center-column { width: 100%; max-width: 100%; }
+}
